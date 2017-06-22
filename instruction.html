@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>CSC 316, Fall 2015, Project 3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="description" content="CSC 216-003 Spring 2005 Program 4 Specification">
+    <style type="text/css">
+<!--
+.style1 {font-family: "Courier New", Courier, monospace}
+-->
+    </style>
+</head>
+  <body style="background-color:#FFFFFF; margin-left:4px; margin-top:4px; margin-right:0px;">
+	<table border="2" align="center" cellpadding="2" cellspacing="2">
+		<tr>
+			<td width="518" style="text-align:center; vertical-align:middle;">
+				<h3 class="title">Project 3: Relationships in a Social Network</h3>
+				<em><strong>due: Sunday, December 6 at 11:45 PM</strong></em></td>
+		</tr>
+  </table>
+<hr class="thin"/>
+            
+		<h3>Academic Integrity (for this and all programming projects)</h3>
+		<p>You <em><strong>are</strong></em> permitted to discuss your general approach, algorithms, and results with others. However, <em><strong>no</strong></em> actual code or documentation can be shared with students who are not on your team. This prohibition applies to code produced by another person in or for previous offerings of this course or another course. Any such sharing we detect will be considered an academic integrity violation. You are welcome to use code in the textbook or another source (but <em><strong>not </strong></em> a Java Collection class), but using such code without citing your sources constitutes plagiarism. <em><strong>Cite your sources in comments </strong></em> of any classes/methods you didn't write entirely yourself.</p>
+		<p>In case of doubt about what is permitted, ask the instructor or check the <a href=https://policies.ncsu.edu/policy/pol-11-35-01> Code of Student Conduct,</a> especially Section 8.</p>
+		
+		<h3>Purpose</h3>
+		<p>Demonstrate understanding of graphs and graph algorithms by implementing them in a nontrivial application.</p>
+		<h3>Overview</h3>
+		<p>In this project, you are expected to model practical problems in terms of graphs and come up with solutions. The problem you will be solving is that of query handling in social networks. In a social network, people are connected to each other by a <em>friend</em> relationship. Your project should take as input the social network and should provide an interface  to query this social network.</p>
+		<h3><strong>Input</strong></h3>
+		<p>Your program has to take input from a file. The first <em>n</em> lines of the file list the persons participating in the social network.&nbsp; The next line is a $ sign by itself.&nbsp; Then there are <em>m</em> lines each of which has two persons connected by a friend relationship. A typical input file might look like (the corresponding drawing is shown on the right):</p>
+		<p><img src="project3-example_graph.jpg" alt="drawing of the graph given by the example input" width="405" height="384" align="right"></p>
+		<p class="style1">
+		Omar<br>
+		Sally<br>
+		  Shantal<br>
+		  Billy<br>
+		  Diego<br>
+		  Prabhu<br>
+		  Natasha<br>
+		  $<br>
+		  Billy Shantal<br>
+		  Diego Sally<br>
+		  Shantal Prabhu<br>
+		  Diego Omar<br>
+		  Natasha Sally<br>
+		  Omar Sally<br>
+		  Diego Natasha</p>
+		<p>The friend relationship is mutual. For example, the line<br>
+		  <span class="style1">Omar Sally</span><br>
+		  would be equivalent to<br>
+		  <span class="style1">Sally Omar</span><br>
+		  You can assume that the input has no redundant (equivalent) lines and that the two people in each relationship have been listed before the $. Names do not have white space in them and are <em>case sensitive </em>.&nbsp; The two friends on each line of the second part of the file are separated by white space.</p>
+		<p>Once your program has read in all the names and relationships from the input, it has to accept a series of queries from standard input and generate output to standard output as described for each query below. The series of queries will terminate with a <em>quit </em>command.</p>
+		<p><strong>Queries and Output</strong></p>
+		<p>It is assumed that your program creates an undirected graph based on the social network and runs algorithms on it in response to each query. The program should begin by printing a $ on a line by itself on the console. After that, the output of each query is terminated with a $ on a line by itself. </p>
+		<p>Your program should support the following queries.</p>
+		<p><code><strong>isfriend</strong></code> <strong><em>personA personB</em></strong></p>
+		<p>The output should be a simple <span class="style1">yes </span>or <span class="style1">no </span>(followed by a $ and a newline). Given the input above, the queries below would result in the output shown </p>
+		<pre class="style1">isfriend Natasha Diego
+yes
+$
+isfriend Omar Natasha
+no
+$ </pre>
+		<p><code><strong>mutual</strong></code> <strong><em>personA personB</em></strong></strong></p>
+		<p>If there are one or more mutual acquaintance(s), you should output all their names one per line, followed by a $ sign on a fresh line.</p>
+		<p>If there are no mutual acquaintances, you should output the $ sign only. So</p>
+		<pre>mutual Prabhu Billy
+Shantal
+$
+mutual Omar Natasha
+Diego
+Sally
+$
+mutual Sally Prabu
+$ </pre>
+		<p><strong><code><strong>relation</strong></code><em> <strong><em>personA personB</em></strong></em></strong></p>
+		<p>For this query, you should find the shortest sequence of friends between A and B, i.e., the shortest path in the graph between nodes representing A and B.Your program should print the names of all the friends on the path in order including A and B, again one name per line. The sequence of friends should be terminated with a $ sign on a fresh line. If there is no path from A to B, then you should output the $ sign only.</p>
+<pre>
+relation Natasha Omar
+Natasha
+Sally
+Omar
+$
+relation Diego Billy
+$
+relation Diego Natasha
+Diego
+Natasha
+$
+</pre>
+<p>
+ <strong><code>notconnected</code></strong></p>
+		<p>Report how many pairs of people are not connected in the social network<strong>.</strong> For all pairs {A, B}in the social network, A&nbsp; is not connected to B if there is no path in the social network between A and B. You have to report the number of such pairs (followed by a $).</p>
+<pre>
+notconnected
+12
+$
+</pre>
+		<p>There are 4 people in one connected component (Diego, Natasha, Omar, and Sally) and 3 in the other (Billy, Prabhu, and Shantal). </p>
+		<p>Each pair is counted at most once. The na&iuml;ve method of doing this is to find out whether each pair in the graph is connected or not.&nbsp; A better approach, as suggested by the example, is to use <em>connected</em> components and then calculate this metric. Note that you only have to output a single integer which is the number of such pairs.</p>
+		<p><strong><code>popular</code></strong></p>
+		<p>Report all the most popular people in the social network. The popularity of a person A is the ratio of the number of direct/indirect friends of A to the sum of the lengths of the paths from A to those friends.</p>
+  <p>If A and B have a direct friend relationship, length(A,B) = 1, otherwise it is the number of edges in the shortest path from A to B. If A and B are not connected, length(A,B) is not defined.<br>
+            <br>
+    Now, popularity(A) = total number of persons B who are direct or indirect
+    friends of A / sum of length(A,B) for all these persons B. The popularity
+    will come out to be a fractional number, with the maximum being 1. Your
+    program needs to print the names of all persons who have the largest popularity (one on each line, terminated by a $). <em><strong>If a person has no friends at all, their popularity is 0 </strong></em>(this is a special case).</p>
+        <pre>
+popular
+Sally
+Shantal
+Diego
+$</pre>
+  <p>All of these have popularity 1.0 because the people to whom they are
+  connected are also their friends. Thus each path contributes 1 to the
+  sum. Omar and Natasha have popularity 0.75 &ndash; they are each connected
+  to 3 other people, two of which are friends and one is connected by a path
+  of length 2. Prabhu and Billy have popularity 2/3 because they are each
+  connected to 2 other people, one a friend, the other by a path of length
+  2. In this example the largest popularity happens to be 1.0 but this is
+  not always the case</p>
+		<p>Note that this definition of popularity makes a person who has only one direct friend and no indirect friends as popular as a person who is friends with everyone. Other, more complicated, definitions would have corrected for this, but we opted for simplicity instead of realism. </p>
+            <hr class="thin"/>
+			
+		<h4>Requirements for implementing the graph queries. </h4>
+		<p>Your program  will read an input text file, respond to a sequence of queries from standard input, and output the results of these queries. It must be executed using the following command:</p>
+		<pre>java SocialNetwork <em>input_file</em></pre>
+		<p>This will be followed by a sequence of query commands coming from standard input (the console). The program responds by writing to the console as shown in the examples above, the output of each query ending with a $ on a line by itself. The program also prints a $ at the beginning to indicate that it is ready to process queries (so that you can tell whether or not it has finished reading the graph). </p>
+		
+		<p> Instead of typing commands on the console, it may bemore convenient to run it as</p>
+		<pre>java SocialNetwork <em>input_file</em> <em>&lt; command_file</em> &gt;<em> output_file</em></pre>
+		<p>Where <code><em>output_file</em></code> will hold the outputs from the commands. </p>
+		<h4>Submitting</h4>
+		<p>You should submit a zip archive that opens to a directory called project3-<em>uid</em>, where <em>uid</em> is your unity login id. In that directory, we will run</p>
+		<pre>% javac SocialNetwork.java
+% java SocialNetwork <em>input_file &lt; commands &gt; output</em></pre>
+  <p>where <em>commands </em>is a file containing a sequence of test commands.  We will compare the contents of the file <em>output </em>to out correct output.</p>
+		<p><strong><em>Please</em></strong> <em><strong>submit team evaluations in a timely fashion -- they are due two days</strong><br>
+	    </em></p>
+		<hr>
+        <h4>Grading</h4>
+                 <table border="1">
+            <caption>
+              <strong>grades for various aspects of the assignment              </strong>
+            </caption>
+            <tr>
+              <td width="442" align="left"><p align="center">Compiles and executes on the example given above without error</p></td>
+              <td width="44" align="center" valign="middle"> <div align="center">20 %</div></td>
+            </tr>
+            <tr>
+              <td align="left"><div align="center">
+                <p align="center">Gives the correct output for commands: 10% per command and another 20% for handling larger random graphs and multiple mixed commands</p>
+              </div></td>
+              <td align="center" valign="middle"><div align="center">70 %</div></td>
+            </tr>
+            <tr>
+              <td align="left"><div align="center">
+                <p>Style: Separate classes for data structures, use of ADT methods,<br> code is easy to read and verify and includes appropriate Javadoc comments </p>
+              </div></td>
+              <td align="center" valign="middle"><div align="center">10 %</div></td>
+            </tr>
+            <tr>
+              <td align="center">Team evaluations</td>
+              <td align="center" valign="middle">10 %</td>
+            </tr>
+  </table>
+</body>
+</html>
+
